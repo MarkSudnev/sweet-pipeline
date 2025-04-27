@@ -1,13 +1,16 @@
 
 import json
 import subprocess
+import uuid
+from datetime import datetime, UTC
+
 from flask import Flask
-from flask import request
 from flask import Response
+from flask import request
 
 app = Flask(__name__)
 
-@app.route("/data", methods=["GET"])
+@app.route("/api/v1/data", methods=["GET"])
 def data():
     query = request.args.get("q")
     if not query:
@@ -18,5 +21,12 @@ def data():
         shell=True,
         text=True
     )
-    response_body = json.dumps({"query": query, "response": f"{result.stdout} | {result.stderr}"})
+    if not result.stdout and result.stderr:
+        return Response(result.stderr, status=500)
+    response_body = json.dumps({
+        "id": str(uuid.uuid4()),
+        "timestamp": datetime.now(UTC).replace(microsecond=0).isoformat(),
+        "query": query,
+        "response": f"{result.stdout}"
+    })
     return Response(response_body, status=200, content_type="application/json")
