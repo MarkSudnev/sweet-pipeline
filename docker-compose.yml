@@ -1,0 +1,6 @@
+services:
+  data-source:
+    build:
+      dockerfile: data-source/dockerfile
+      context: data-source
+    container_name: data-source
