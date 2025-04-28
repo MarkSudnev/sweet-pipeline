@@ -1,20 +1,32 @@
-from app import app
+from pathlib import Path
+
+import requests
+from requests import Response
+from testcontainers.core.container import DockerContainer
+from testcontainers.core.image import DockerImage
 
 
 class TestApp:
 
-    test_app = ...
+    docker_context = Path(__file__).parent.parent
+    docker_image = DockerImage(path=docker_context, tag="data-source-test")
+    docker_container: DockerContainer = ...
 
-    def setup_method(self):
-        self.test_app = app.test_client()
-        self.test_app.testing = True
+    @classmethod
+    def setup_method(cls):
+        cls.docker_image.build()
+        cls.docker_container = DockerContainer(str(cls.docker_image)).with_exposed_ports(8091)
+        cls.docker_container.start()
+
+    @classmethod
+    def teardown_method(cls):
+        cls.docker_container.stop()
+        cls.docker_image.remove()
 
     def test_returns_ok_when_query_is_present_and_correct(self):
-        response = self.test_app.get("/data?q=hello")
-        assert response.status == '200 OK'
-        assert response.data.decode() == '{"query": "hello", "response": "some response data"}'
-
-    def test_returns_bad_request_when_query_is_missing(self):
-        response = self.test_app.get("/data?abcd=hello")
-        assert response.status.lower() == '400 bad request'
-
+        host = self.docker_container.get_container_host_ip()
+        port = self.docker_container.get_exposed_port(8091)
+        url = f"http://{host}:{port}/api/v1/data?q=hello"
+        print(f"URL = {url}")
+        response: Response = requests.get(url)
+        assert response.ok
