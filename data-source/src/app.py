@@ -30,3 +30,7 @@ def data():
         "response": f"{result.stdout}"
     })
     return Response(response_body, status=200, content_type="application/json")
+
+@app.route("/ready", methods=["GET"])
+def ready():
+    return Response(status=200) 
