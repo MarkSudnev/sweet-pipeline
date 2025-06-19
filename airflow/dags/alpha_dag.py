@@ -19,6 +19,7 @@ aws_region = "us-east-1"
     start_date=datetime(2020, 1, 1),
     schedule="*/2 * * * *",
     max_active_runs=1,
+    is_paused_upon_creation=False,
     catchup=False
 )
 def alpha_dag():
