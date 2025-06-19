@@ -83,6 +83,7 @@ services:
       MINIO_NOTIFY_KAFKA_ENABLE_ONE: on
       MINIO_NOTIFY_KAFKA_BROKERS_ONE: kafka:9092
       MINIO_NOTIFY_KAFKA_TOPIC_ONE: sweet
+      MINIO_NOTIFY_KAFKA_VERSION_ONE: 3.9.1
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -111,6 +112,7 @@ services:
       /usr/bin/mc mb myminio/sweet-bucket;
       /usr/bin/mc policy set public myminio/sweet-bucket;
       /usr/bin/mc event add myminio/sweet-bucket arn:minio:sqs::ONE:kafka;
+      /usr/bin/mc admin service restart myminio;
       exit 0;
       "
     profiles:
@@ -118,13 +120,13 @@ services:
       - airflow
 
   kafka:
-    image: apache/kafka:latest
+    image: apache/kafka:3.9.1
     container_name: kafka
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://:9092
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
