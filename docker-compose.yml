@@ -86,8 +86,6 @@ services:
     ports:
       - "9000:9000"
       - "9001:9001"
-    # volumes:
-    #   - ./minio:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:9000/minio/health/live"]
       interval: 30s
@@ -112,6 +110,7 @@ services:
       /usr/bin/mc alias set myminio http://minio:9000 user password;
       /usr/bin/mc mb myminio/sweet-bucket;
       /usr/bin/mc policy set public myminio/sweet-bucket;
+      /usr/bin/mc event add myminio/sweet-bucket arn:minio:sqs::ONE:kafka;
       exit 0;
       "
     profiles:
