@@ -2,7 +2,7 @@ from typing import Callable
 
 from src.main.domain.fetch_shipment import FetchShipment
 from src.main.domain.parse_shipment_metadata import ParseShipmentMetadata
-from src.main.result import Result, Failure
+from src.main.result import Result, Failure, Success, Unit
 
 
 def DataConsumer(
@@ -14,6 +14,10 @@ def DataConsumer(
     shipment_metadata_result = parse_shipment_metadata(message)
     if not shipment_metadata_result.is_successful():
       return Failure(shipment_metadata_result.error)
-    return fetch_shipment(shipment_metadata_result.value)
+    for metadata in shipment_metadata_result.value:
+      result: Result[Result.Unit] = fetch_shipment(metadata)
+      if not result.is_successful():
+        return Failure(result.error)
+    return Success(Unit())
 
   return _execute

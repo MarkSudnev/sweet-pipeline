@@ -1,3 +1,5 @@
+from typing import List
+
 from src.main.domain.shipment_metadata import ShipmentMetadata
 from src.main.infrastructure.json_shipment_metadata_parser import \
   JsonShipmentMetadataParser
@@ -11,10 +13,10 @@ class TestJsonShipmentMetadataParser:
     message = read_resource("message_example.json")
     parser = JsonShipmentMetadataParser()
 
-    result: Result[ShipmentMetadata] = parser(message)
+    result: Result[List[ShipmentMetadata]] = parser(message)
 
     assert result.is_successful() is True
-    assert result.value == ShipmentMetadata(
+    assert result.value[0] == ShipmentMetadata(
       filepath="sweet-bucket/sweet-94c13f58-73cf-4ad4-9afa-3823dcada72f.json",
       size=865,
       type="binary/octet-stream"
@@ -24,7 +26,7 @@ class TestJsonShipmentMetadataParser:
     message = """{"invalid": "json"}"""
     parser = JsonShipmentMetadataParser()
 
-    result: Result[ShipmentMetadata] = parser(message)
+    result: Result[List[ShipmentMetadata]] = parser(message)
 
     assert result.is_successful() is False
     assert result.error is not None
