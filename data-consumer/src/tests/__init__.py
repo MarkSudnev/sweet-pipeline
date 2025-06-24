@@ -9,6 +9,7 @@ def read_resource(filename: str) -> str:
   with open(resource_filename, "r") as resource_file:
     return resource_file.read()
 
+
 def prepare_bucket(bucket_name: str) -> None:
   s3 = boto3.client("s3")
   s3.create_bucket(Bucket=bucket_name)

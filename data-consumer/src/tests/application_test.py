@@ -6,7 +6,6 @@ from src.tests import read_resource, prepare_bucket
 
 
 class TestApplication:
-
   bucket_name = "test-bucket"
 
   @mock_aws
@@ -24,4 +23,3 @@ class TestApplication:
     s3 = boto3.client("s3")
     response = s3.list_objects_v2(Bucket=self.bucket_name)
     assert "Contents" in response.keys()
-
