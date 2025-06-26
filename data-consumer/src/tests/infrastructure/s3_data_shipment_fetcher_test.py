@@ -1,3 +1,6 @@
+import tempfile
+from pathlib import Path
+
 from moto import mock_aws
 
 from src.main.domain.data_shipment import DataShipment
@@ -9,18 +12,81 @@ from src.tests import prepare_bucket
 
 class TestS3DataShipmentFetcher:
 
+  temp_dir: Path = Path(tempfile.gettempdir()).joinpath("data-consumer")
+
+  def teardown_method(self):
+    if self.temp_dir.exists():
+      for item in self.temp_dir.iterdir():
+        if not item.is_dir():
+          item.unlink()
+
   @mock_aws
   def test_fetch_shipment_from_s3(self):
     prepare_bucket(
       bucket_name="alpha",
-      content={"beta.json": "one-two".encode("utf8")}
+      content={"beta/gamma.json": "one-two".encode("utf8")}
     )
-    metadata = ShipmentMetadata("alpha/beta.json", 1024, "type/type")
+    metadata = ShipmentMetadata("alpha/beta/gamma.json", 1024, "type/type")
+
     fetcher = S3DataShipmentFetcher(
       aws_access_key_id="key",
-      aws_secret_access_key="secret"
+      aws_secret_access_key="secret",
+      store_path=self.temp_dir
     )
 
     result: Result[DataShipment] = fetcher(metadata)
 
     assert result.is_successful() is True
+    assert result.value == DataShipment(
+      metadata=metadata,
+      location=self.temp_dir.joinpath("beta/gamma.json")
+    )
+
+  @mock_aws
+  def test_returns_failure_when_bucket_is_missing(self):
+    prepare_bucket(
+      bucket_name="alpha",
+      content={"beta/gamma.json": "one-two".encode("utf8")}
+    )
+    metadata = ShipmentMetadata("missing-bucket/beta/gamma.json", 1024, "type/type")
+
+    fetcher = S3DataShipmentFetcher(
+      aws_access_key_id="key",
+      aws_secret_access_key="secret",
+      store_path=self.temp_dir
+    )
+
+    result: Result[DataShipment] = fetcher(metadata)
+
+    assert result.is_successful() is False
+
+  @mock_aws
+  def test_returns_failure_when_key_is_missing(self):
+    prepare_bucket(
+      bucket_name="alpha",
+      content={"beta/gamma.json": "one-two".encode("utf8")}
+    )
+    metadata = ShipmentMetadata("not/existing/key.json", 1024, "type/type")
+
+    fetcher = S3DataShipmentFetcher(
+      aws_access_key_id="key",
+      aws_secret_access_key="secret",
+      store_path=self.temp_dir
+    )
+
+    result: Result[DataShipment] = fetcher(metadata)
+
+    assert result.is_successful() is False
+
+  def test_returns_failure_when_s3_is_unavailable(self):
+    metadata = ShipmentMetadata("not/existing/key.json", 1024, "type/type")
+
+    fetcher = S3DataShipmentFetcher(
+      aws_access_key_id="key",
+      aws_secret_access_key="secret",
+      store_path=self.temp_dir
+    )
+
+    result: Result[DataShipment] = fetcher(metadata)
+
+    assert result.is_successful() is False

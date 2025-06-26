@@ -18,8 +18,8 @@ class Result[T]:
   def error(self) -> Optional[str]:
     return self.__error
 
-  @classmethod
-  def from_function[T](cls, func: Callable[[], T]) -> "Result[T]":
+  @staticmethod
+  def from_function[T](func: Callable[[], T]) -> "Result[T]":
     try:
       return Success(func())
     except Exception as e:

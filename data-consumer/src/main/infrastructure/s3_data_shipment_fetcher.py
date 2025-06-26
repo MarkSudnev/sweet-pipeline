@@ -1,14 +1,19 @@
+import os
+from pathlib import Path
+from typing import List, Dict
+
 import boto3
 
 from src.main.domain.data_shipment import DataShipment
 from src.main.domain.fetch_shipment import FetchShipment
 from src.main.domain.shipment_metadata import ShipmentMetadata
-from src.main.result import Result, Success, Unit
+from src.main.result import Result, Success, Failure
 
 
 def S3DataShipmentFetcher(
   aws_access_key_id: str,
-  aws_secret_access_key: str
+  aws_secret_access_key: str,
+  store_path: Path
 ) -> FetchShipment:
 
   s3_client = boto3.client(
@@ -17,8 +22,22 @@ def S3DataShipmentFetcher(
     aws_secret_access_key=aws_secret_access_key
   )
 
+  def __prepare_directory(file: Path):
+    if not file.parent.exists():
+      file.parent.mkdir(parents=True, exist_ok=True)
+
   def _execute(metadata: ShipmentMetadata) -> Result[DataShipment]:
-    
-    return Success(Unit())
+    path_components: List[str] = metadata.filepath.split("/")
+    bucket = path_components[0]
+    key = "/".join(path_components[1:])
+    local_path: str = os.sep.join(path_components[1:])
+    result: Result[Dict] = Result.from_function(lambda : s3_client.get_object(Bucket=bucket, Key=key))
+    if not result.is_successful():
+      return Failure(result.error)
+    content: bytes = result.value["Body"].read()
+    location: Path = store_path.joinpath(local_path)
+    __prepare_directory(location)
+    location.write_bytes(content)
+    return Success(DataShipment(metadata=metadata, location=location))
 
   return _execute
