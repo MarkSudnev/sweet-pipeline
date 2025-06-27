@@ -6,7 +6,7 @@ import boto3
 
 from src.main.domain.data_shipment import DataShipment
 from src.main.domain.fetch_shipment import FetchShipment
-from src.main.domain.shipment_metadata import ShipmentMetadata
+from src.main.domain.file_location import FileLocation
 from src.main.result import Result, Success, Failure
 
 
@@ -26,8 +26,8 @@ def S3DataShipmentFetcher(
     if not file.parent.exists():
       file.parent.mkdir(parents=True, exist_ok=True)
 
-  def _execute(metadata: ShipmentMetadata) -> Result[DataShipment]:
-    path_components: List[str] = metadata.filepath.split("/")
+  def _execute(file_location: FileLocation) -> Result[DataShipment]:
+    path_components: List[str] = file_location.uri.split("/")
     bucket = path_components[0]
     key = "/".join(path_components[1:])
     local_path: str = os.sep.join(path_components[1:])
@@ -38,6 +38,6 @@ def S3DataShipmentFetcher(
     location: Path = store_path.joinpath(local_path)
     __prepare_directory(location)
     location.write_bytes(content)
-    return Success(DataShipment(metadata=metadata, location=location))
+    return Success(DataShipment(location=location))
 
   return _execute

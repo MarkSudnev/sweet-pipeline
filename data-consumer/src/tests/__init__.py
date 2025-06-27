@@ -5,10 +5,14 @@ import boto3
 
 
 def read_resource(filename: str) -> str:
-  folder, _ = os.path.split(__file__)
-  resource_filename: str = os.path.join(folder, "resources", filename)
+  resource_filename: str = get_resource(filename)
   with open(resource_filename, "r") as resource_file:
     return resource_file.read()
+
+
+def get_resource(filename) -> str:
+  folder, _ = os.path.split(__file__)
+  return os.path.join(folder, "resources", filename)
 
 
 def prepare_bucket(bucket_name: str, content: Dict[str, bytes] = None) -> None:

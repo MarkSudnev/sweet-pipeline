@@ -1,7 +1,6 @@
 from typing import Callable
 
-from src.main.domain.data_shipment import DataShipment
 from src.main.domain.file_location import FileLocation
 from src.main.result import Result
 
-FetchShipment = Callable[[FileLocation], Result[DataShipment]]
+ExtractFileLocation = Callable[[str], Result[FileLocation]]
