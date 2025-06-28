@@ -26,11 +26,9 @@ class TestApplication:
     executor = DummyPostgresStatementExecutor()
     data_consumer = DataConsumer(
       extract_file_location=JsonFileLocationExtractor(),
-      fetch_shipment=S3DataShipmentFetcher(
-        aws_access_key_id="aaa",
-        aws_secret_access_key="bbb",
-        store_path=Path(get_resource("store"))
-      ),
+      fetch_shipment=S3DataShipmentFetcher(aws_access_key_id="aaa",
+                                           aws_secret_access_key="bbb",
+                                           store_path=Path(get_resource("store"))),
       store_shipment=PostgresShipmentStorage(executor)
     )
 

@@ -2,3 +2,4 @@ kafka-python==2.2.12
 boto3==1.38.40
 moto==5.1.6
 pytest==8.4.1
+psycopg2-binary==2.9.10

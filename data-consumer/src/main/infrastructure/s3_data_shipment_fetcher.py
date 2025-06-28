@@ -13,13 +13,14 @@ from src.main.result import Result, Success, Failure
 def S3DataShipmentFetcher(
   aws_access_key_id: str,
   aws_secret_access_key: str,
-  store_path: Path
+  store_path: Path,
+  endpoint_url=None
 ) -> FetchShipment:
-
   s3_client = boto3.client(
     "s3",
     aws_access_key_id=aws_access_key_id,
-    aws_secret_access_key=aws_secret_access_key
+    aws_secret_access_key=aws_secret_access_key,
+    endpoint_url=endpoint_url
   )
 
   def __prepare_directory(file: Path):
@@ -31,7 +32,8 @@ def S3DataShipmentFetcher(
     bucket = path_components[0]
     key = "/".join(path_components[1:])
     local_path: str = os.sep.join(path_components[1:])
-    result: Result[Dict] = Result.from_function(lambda : s3_client.get_object(Bucket=bucket, Key=key))
+    result: Result[Dict] = Result.from_function(
+      lambda: s3_client.get_object(Bucket=bucket, Key=key))
     if not result.is_successful():
       return Failure(result.error)
     content: bytes = result.value["Body"].read()

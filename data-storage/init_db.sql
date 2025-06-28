@@ -1,1 +1,1 @@
-create database sweet;
+CREATE DATABASE sweet;

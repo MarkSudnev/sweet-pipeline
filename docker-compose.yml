@@ -26,7 +26,7 @@ x-airflow-common:
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
-    postgres:
+    airflow-metastorage:
       condition: service_healthy
 
 services:
@@ -78,7 +78,7 @@ services:
       /usr/bin/mc alias set myminio http://minio:9000 ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY};
       /usr/bin/mc mb myminio/sweet-bucket;
       /usr/bin/mc policy set public myminio/sweet-bucket;
-      /usr/bin/mc event add myminio/sweet-bucket arn:minio:sqs::ONE:kafka;
+      /usr/bin/mc event add myminio/sweet-bucket arn:minio:sqs::ONE:kafka --event put;
       /usr/bin/mc admin service restart myminio;
       exit 0;
       "
@@ -124,9 +124,7 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
-      POSTGRES_STORAGE_USER: ${POSTGRES_STORAGE_USER}
-      POSTGRES_STORAGE_PASSWORD: ${POSTGRES_STORAGE_PASSWORD}
-      POSTGRES_STORAGE_DB: ${POSTGRES_STORAGE_DB}
+      POSTGRES_CONNECTION_STRING: postgresql://${POSTGRES_STORAGE_USER}:${POSTGRES_STORAGE_PASSWORD}@data-storage/${POSTGRES_STORAGE_DB}
 
   data-storage:
     image: postgres:16.9-alpine
@@ -135,8 +133,11 @@ services:
       POSTGRES_USER: ${POSTGRES_STORAGE_USER}
       POSTGRES_PASSWORD: ${POSTGRES_STORAGE_PASSWORD}
       POSTGRES_DB: ${POSTGRES_STORAGE_DB}
+    ports:
+      - "5432:5432"
     volumes:
       - "./data-storage/init_db.sql:/docker-entrypoint-initdb.d/init.sql:ro"
+      - "./data-storage/create-table.sql:/docker-entrypoint-initdb.d/create-table.sql:ro"
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "admin"]
       interval: 10s

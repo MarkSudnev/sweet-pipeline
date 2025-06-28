@@ -4,7 +4,7 @@ from typing import Callable, Dict, Any
 
 from src.main.domain.data_shipment import DataShipment
 from src.main.domain.store_shipment import StoreShipment
-from src.main.result import Result, Success, Unit, Failure
+from src.main.result import Result, Failure
 
 PostgresStatementExecutor = Callable[[str], None]
 
@@ -22,9 +22,10 @@ def PostgresShipmentStorage(
     return json.loads(raw)
 
   def _generate_sql_statement(data: Dict[str, Any]) -> str:
+    body = data["response"].replace("'", "''")
     return _sql_statement_template.format(
       _id=data["id"],
-      body=data["response"],
+      body=body,
       ts=data["timestamp"]
     )
 

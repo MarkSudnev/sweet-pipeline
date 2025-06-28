@@ -28,11 +28,9 @@ class TestS3DataShipmentFetcher:
     )
     file_location = FileLocation("alpha/beta/gamma.json")
 
-    fetcher = S3DataShipmentFetcher(
-      aws_access_key_id="key",
-      aws_secret_access_key="secret",
-      store_path=self.temp_dir
-    )
+    fetcher = S3DataShipmentFetcher(aws_access_key_id="key",
+                                    aws_secret_access_key="secret",
+                                    store_path=self.temp_dir)
 
     result: Result[DataShipment] = fetcher(file_location)
 
@@ -49,11 +47,9 @@ class TestS3DataShipmentFetcher:
     )
     file_location = FileLocation("missing-bucket/beta/gamma.json")
 
-    fetcher = S3DataShipmentFetcher(
-      aws_access_key_id="key",
-      aws_secret_access_key="secret",
-      store_path=self.temp_dir
-    )
+    fetcher = S3DataShipmentFetcher(aws_access_key_id="key",
+                                    aws_secret_access_key="secret",
+                                    store_path=self.temp_dir)
 
     result: Result[DataShipment] = fetcher(file_location)
 
@@ -67,11 +63,9 @@ class TestS3DataShipmentFetcher:
     )
     file_location = FileLocation("not/existing/key.json")
 
-    fetcher = S3DataShipmentFetcher(
-      aws_access_key_id="key",
-      aws_secret_access_key="secret",
-      store_path=self.temp_dir
-    )
+    fetcher = S3DataShipmentFetcher(aws_access_key_id="key",
+                                    aws_secret_access_key="secret",
+                                    store_path=self.temp_dir)
 
     result: Result[DataShipment] = fetcher(file_location)
 
@@ -80,11 +74,9 @@ class TestS3DataShipmentFetcher:
   def test_returns_failure_when_s3_is_unavailable(self):
     file_location = FileLocation("not/existing/key.json")
 
-    fetcher = S3DataShipmentFetcher(
-      aws_access_key_id="key",
-      aws_secret_access_key="secret",
-      store_path=self.temp_dir
-    )
+    fetcher = S3DataShipmentFetcher(aws_access_key_id="key",
+                                    aws_secret_access_key="secret",
+                                    store_path=self.temp_dir)
 
     result: Result[DataShipment] = fetcher(file_location)
 

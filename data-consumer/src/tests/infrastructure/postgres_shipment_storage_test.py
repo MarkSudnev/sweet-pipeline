@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from src.main.domain.data_shipment import DataShipment
+from src.main.infrastructure.postgres_client import parse_connection_string
 from src.main.infrastructure.postgres_shipment_storage import PostgresShipmentStorage
 from src.main.result import Result
 from src.tests import get_resource
@@ -59,6 +60,16 @@ class TestPostgresShipmentStorage:
 
     assert result.is_successful() is False
 
+  def test_parse_connection_string(self):
+    connection_string = "postgresql://username:password@airflow-metastorage/dbname"
+    connection_params = parse_connection_string(connection_string)
+    assert connection_params["user"] == "username"
+    assert connection_params["password"] == "password"
+    assert connection_params["host"] == "airflow-metastorage"
+    assert connection_params["port"] == 5432
+    assert connection_params["database"] == "dbname"
+
+
 insert_sql_statement = """
-INSERT INTO alpha ("id", "body", "timestamp") VALUES ('1a7cb636-0acc-421b-84c2-af07ee1fbcd4', 'Lorem Ipsum', '2025-05-17T21:18:10+00:00');
+INSERT INTO alpha ("id", "body", "timestamp") VALUES ('1a7cb636-0acc-421b-84c2-af07ee1fbcd4', 'Let''s go and do something', '2025-05-17T21:18:10+00:00');
 """
