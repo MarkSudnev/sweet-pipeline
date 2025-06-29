@@ -6,13 +6,13 @@ from pathlib import Path
 
 from kafka import KafkaConsumer
 
-from src.main.domain.data_consumer import DataConsumer
-from src.main.infrastructure.json_file_location_extractor import \
+from domain.data_consumer import DataConsumer
+from infrastructure.json_file_location_extractor import \
   JsonFileLocationExtractor
-from src.main.infrastructure.postgres_client import PostgresCLient
-from src.main.infrastructure.postgres_shipment_storage import PostgresShipmentStorage
-from src.main.infrastructure.s3_data_shipment_fetcher import S3DataShipmentFetcher
-from src.main.result import Result
+from infrastructure.postgres_client import PostgresCLient
+from infrastructure.postgres_shipment_storage import PostgresShipmentStorage
+from infrastructure.s3_data_shipment_fetcher import S3DataShipmentFetcher
+from result import Result
 
 logging.basicConfig(
   level=logging.INFO,

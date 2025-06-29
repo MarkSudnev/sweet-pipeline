@@ -1,11 +1,11 @@
 from typing import Callable
 
-from src.main.domain.data_shipment import DataShipment
-from src.main.domain.extract_file_location import ExtractFileLocation
-from src.main.domain.fetch_shipment import FetchShipment
-from src.main.domain.file_location import FileLocation
-from src.main.domain.store_shipment import StoreShipment
-from src.main.result import Result, Failure, Success, Unit
+from domain.data_shipment import DataShipment
+from domain.extract_file_location import ExtractFileLocation
+from domain.fetch_shipment import FetchShipment
+from domain.file_location import FileLocation
+from domain.store_shipment import StoreShipment
+from result import Result, Failure, Success, Unit
 
 
 def DataConsumer(

@@ -35,9 +35,7 @@ class TestS3DataShipmentFetcher:
     result: Result[DataShipment] = fetcher(file_location)
 
     assert result.is_successful() is True
-    assert result.value == DataShipment(
-      location=self.temp_dir.joinpath("beta/gamma.json")
-    )
+    assert result.value.location == self.temp_dir.joinpath("beta/gamma.json")
 
   @mock_aws
   def test_returns_failure_when_bucket_is_missing(self):

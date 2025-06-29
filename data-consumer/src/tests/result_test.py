@@ -1,4 +1,4 @@
-from src.main.result import Success, Failure, Unit, Result
+from result import Success, Failure, Unit, Result
 
 
 class TestResult:

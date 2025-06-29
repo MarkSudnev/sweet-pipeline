@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from src.main.domain.data_shipment import DataShipment
-from src.main.infrastructure.postgres_client import parse_connection_string
-from src.main.infrastructure.postgres_shipment_storage import PostgresShipmentStorage
-from src.main.result import Result
+from domain.data_shipment import DataShipment
+from infrastructure.postgres_client import parse_connection_string
+from infrastructure.postgres_shipment_storage import PostgresShipmentStorage
+from result import Result
 from src.tests import get_resource
 from src.tests.fixtures import DummyPostgresStatementExecutor
 

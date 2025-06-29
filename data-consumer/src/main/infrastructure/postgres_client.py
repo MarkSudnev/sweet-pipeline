@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 
 import psycopg2
 
-from src.main.infrastructure.postgres_shipment_storage import PostgresStatementExecutor
+from infrastructure.postgres_shipment_storage import PostgresStatementExecutor
 
 
 def PostgresCLient(connection_string: str) -> PostgresStatementExecutor:

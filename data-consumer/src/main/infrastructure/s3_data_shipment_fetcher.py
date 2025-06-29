@@ -4,10 +4,10 @@ from typing import List, Dict
 
 import boto3
 
-from src.main.domain.data_shipment import DataShipment
-from src.main.domain.fetch_shipment import FetchShipment
-from src.main.domain.file_location import FileLocation
-from src.main.result import Result, Success, Failure
+from domain.data_shipment import DataShipment
+from domain.fetch_shipment import FetchShipment
+from domain.file_location import FileLocation
+from result import Result, Success, Failure
 
 
 def S3DataShipmentFetcher(

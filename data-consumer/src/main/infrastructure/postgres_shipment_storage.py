@@ -2,9 +2,9 @@ import json
 from pathlib import Path
 from typing import Callable, Dict, Any
 
-from src.main.domain.data_shipment import DataShipment
-from src.main.domain.store_shipment import StoreShipment
-from src.main.result import Result, Failure
+from domain.data_shipment import DataShipment
+from domain.store_shipment import StoreShipment
+from result import Result, Failure
 
 PostgresStatementExecutor = Callable[[str], None]
 

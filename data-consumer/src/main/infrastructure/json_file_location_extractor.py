@@ -1,9 +1,9 @@
 import json
 from typing import Dict, Any
 
-from src.main.domain.extract_file_location import ExtractFileLocation
-from src.main.domain.file_location import FileLocation
-from src.main.result import Result, Failure
+from domain.extract_file_location import ExtractFileLocation
+from domain.file_location import FileLocation
+from result import Result, Failure
 
 
 def JsonFileLocationExtractor() -> ExtractFileLocation:

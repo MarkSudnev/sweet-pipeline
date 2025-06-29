@@ -1,9 +1,9 @@
-from src.main.domain.data_consumer import DataConsumer
-from src.main.domain.extract_file_location import ExtractFileLocation
-from src.main.domain.fetch_shipment import FetchShipment
-from src.main.domain.file_location import FileLocation
-from src.main.domain.store_shipment import StoreShipment
-from src.main.result import Success, Unit, Result, Failure
+from domain.data_consumer import DataConsumer
+from domain.extract_file_location import ExtractFileLocation
+from domain.fetch_shipment import FetchShipment
+from domain.file_location import FileLocation
+from domain.store_shipment import StoreShipment
+from result import Success, Unit, Result, Failure
 from src.tests.fixtures import DummyShipmentParser, DummyShipmentFetcher, \
   DummyShipmentStorage, test_data_shipment
 
