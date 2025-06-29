@@ -41,8 +41,5 @@ class Failure(Result):
     super().__init__(value=None, error=error)
 
 
-
-
 def Unit():
   return Result.Unit()
-

@@ -17,9 +17,10 @@ class TestApplication:
 
   @mock_aws
   def test_app(self):
+    shipment: bytes = read_resource("alpha-shipment-example.json").encode("utf-8")
     prepare_bucket(
       bucket_name=self.bucket_name,
-      content={"sweet-94c13f58-73cf-4ad4-9afa-3823dcada72f.json": read_resource("alpha-shipment-example.json").encode("utf-8")})
+      content={"sweet-94c13f58-73cf-4ad4-9afa-3823dcada72f.json": shipment})
 
     message: str = read_resource("message_example.json")
     executor = DummyPostgresStatementExecutor()

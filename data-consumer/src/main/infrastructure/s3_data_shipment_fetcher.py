@@ -16,6 +16,7 @@ def S3DataShipmentFetcher(
   store_path: Path,
   endpoint_url=None
 ) -> FetchShipment:
+
   s3_client = boto3.client(
     "s3",
     aws_access_key_id=aws_access_key_id,

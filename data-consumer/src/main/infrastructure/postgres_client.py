@@ -7,7 +7,6 @@ from infrastructure.postgres_shipment_storage import PostgresStatementExecutor
 
 
 def PostgresClient(connection_string: str) -> PostgresStatementExecutor:
-
   connection_params: Dict[str, Any] = parse_connection_string(connection_string)
   connection = psycopg2.connect(**connection_params)
 
@@ -17,6 +16,7 @@ def PostgresClient(connection_string: str) -> PostgresStatementExecutor:
     connection.commit()
 
   return _execute
+
 
 def parse_connection_string(connection_string: str) -> Dict[str, Any]:
   parsed_uri = urlparse(connection_string)
@@ -32,4 +32,3 @@ def parse_connection_string(connection_string: str) -> Dict[str, Any]:
     "password": password
   })
   return params
-

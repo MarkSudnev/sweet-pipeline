@@ -37,7 +37,7 @@ def PostgresShipmentStorage(
       return Failure(data_result.error)
 
     sql_statement_result: Result[str] = Result.from_function(
-      lambda : _generate_sql_statement(data_result.value)
+      lambda: _generate_sql_statement(data_result.value)
     )
     if not sql_statement_result.is_successful():
       return Failure(sql_statement_result.error)
