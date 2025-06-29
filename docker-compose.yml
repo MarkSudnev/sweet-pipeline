@@ -107,7 +107,7 @@ services:
       test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list | grep -q ."]
       interval: 10s
       timeout: 10s
-      retries: 5
+      retries: 10
       start_period: 10s
 
   data-consumer:
@@ -116,11 +116,14 @@ services:
       context: data-consumer
     container_name: data-consumer
     depends_on:
+      data-storage:
+        condition: service_healthy
       kafka:
         condition: service_healthy
     environment:
       KAFKA_TOPIC: ${KAFKA_TOPIC}
       KAFKA_BROKERS: kafka:9092
+      AWS_ENDPOINT: http://minio:9000
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
@@ -136,14 +139,12 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - "./data-storage/init_db.sql:/docker-entrypoint-initdb.d/init.sql:ro"
       - "./data-storage/create-table.sql:/docker-entrypoint-initdb.d/create-table.sql:ro"
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "admin"]
+      test: ["CMD", "pg_isready", "-U", "sweet"]
       interval: 10s
       retries: 5
       start_period: 5s
-    restart: always   
 
   airflow-scheduler:
     <<: *airflow-common

@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim
+FROM ubuntu:24.10
 
 USER root
 
