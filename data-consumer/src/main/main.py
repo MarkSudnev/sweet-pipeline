@@ -3,13 +3,14 @@ import os
 import sys
 import tempfile
 from pathlib import Path
+from typing import List
 
 from kafka import KafkaConsumer
 
 from domain.data_consumer import DataConsumer
 from infrastructure.json_file_location_extractor import \
   JsonFileLocationExtractor
-from infrastructure.postgres_client import PostgresCLient
+from infrastructure.postgres_client import PostgresClient
 from infrastructure.postgres_shipment_storage import PostgresShipmentStorage
 from infrastructure.s3_data_shipment_fetcher import S3DataShipmentFetcher
 from result import Result
@@ -22,15 +23,14 @@ logging.basicConfig(
 
 
 def main(
-  kafka_brokers,
-  kafka_topic,
-  aws_access_key_id,
-  aws_secret_access_key,
-  aws_endpoint,
-  pg_connection_string
+  kafka_brokers: List[str],
+  kafka_topic: str,
+  aws_access_key_id: str,
+  aws_secret_access_key: str,
+  aws_endpoint: str,
+  pg_connection_string: str
 ):
-  # executor = PostgresCLient(pg_connection_string)
-  executor = PostgresCLient(pg_connection_string)
+  executor = PostgresClient(pg_connection_string)
   data_consumer = DataConsumer(
     extract_file_location=JsonFileLocationExtractor(),
     fetch_shipment=S3DataShipmentFetcher(
@@ -56,43 +56,6 @@ def main(
       logging.error(f"Consumption failed: {result.error}")
 
 
-#   try_number = 1
-#   consumer: KafkaConsumer = ...
-#   while try_number < 20:
-#     try:
-#       logging.info(f"Trying to connect to Kafka: {try_number}/5")
-#       consumer = KafkaConsumer(
-#         kafka_topic,
-#         group_id=None,
-#         bootstrap_servers=kafka_brokers,
-#         auto_offset_reset='earliest'
-#       )
-#       break
-#     except NoBrokersAvailable as e:
-#       if try_number < 5:
-#         logging.warning("Failed to connect to Kafka")
-#       else:
-#         raise e
-#     try_number += 1
-#     time.sleep(5)
-#
-#   while True:
-#     response = consumer.poll(timeout_ms=1000)
-#     if response is None:
-#       continue
-#     messages = flat_messages(response.values())
-#     keys = [m.value for m in messages]
-#     for k in keys:
-#       logging.info(f"Message received: {k.decode('utf-8')}")
-#
-#
-# def flat_messages(messages: List[List[Any]]) -> List:
-#   out_messages = []
-#   for message in messages:
-#     out_messages.extend(message)
-#   return out_messages
-
-
 if __name__ == "__main__":
   brokers = os.environ["KAFKA_BROKERS"].split(",")
   topic = os.environ["KAFKA_TOPIC"]
@@ -108,8 +71,3 @@ if __name__ == "__main__":
     aws_endpoint,
     pg_connection_string
   )
-
-"""
-raise Errors.NoBrokersAvailable()
-kafka.errors.NoBrokersAvailable: NoBrokersAvailable
-"""

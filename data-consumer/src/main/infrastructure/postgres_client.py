@@ -6,7 +6,7 @@ import psycopg2
 from infrastructure.postgres_shipment_storage import PostgresStatementExecutor
 
 
-def PostgresCLient(connection_string: str) -> PostgresStatementExecutor:
+def PostgresClient(connection_string: str) -> PostgresStatementExecutor:
 
   connection_params: Dict[str, Any] = parse_connection_string(connection_string)
   connection = psycopg2.connect(**connection_params)
