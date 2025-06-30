@@ -1,0 +1,8 @@
+scrape_configs:
+  - job_name: 'Sweet Pipeline Data Source'
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+    static_configs:
+      - targets: ['data-source:8091']
+        labels:
+          application: 'Data Source'
