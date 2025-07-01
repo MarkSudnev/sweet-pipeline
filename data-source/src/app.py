@@ -7,13 +7,18 @@ from datetime import datetime, UTC
 from flask import Flask
 from flask import Response
 from flask import request
-from prometheus_client import generate_latest, CONTENT_TYPE_LATEST, Histogram
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST, Gauge
 
 app = Flask(__name__)
 
-inference_latency = Histogram(
+inference_latency = Gauge(
     "inference_latency_seconds",
     "How long inference happens"
+)
+
+inference_size = Gauge(
+    "inference_size_chars",
+    "Characters count"
 )
 
 
@@ -47,14 +52,16 @@ def data():
             shell=True,
             text=True
         )
-    inference_latency.observe(_timer.duration)
+    inference_latency.set(_timer.duration)
     if not result.stdout and result.stderr:
         return Response(result.stderr, status=500)
+    body: str = result.stdout
+    inference_size.set(len(body))
     response_body = json.dumps({
         "id": str(uuid.uuid4()),
         "timestamp": datetime.now(UTC).replace(microsecond=0).isoformat(),
         "query": query,
-        "response": f"{result.stdout}"
+        "response": f"{body}"
     })
     return Response(response_body, status=200, content_type="application/json")
 
