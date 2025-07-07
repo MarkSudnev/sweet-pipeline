@@ -28,3 +28,4 @@ A python application designed by Hexagon-like architecture. Listens **a topic in
 - [ ] [data-consumer] fix missing topic failure
 - [ ] CI/CD with gh-actions
 - [ ] [data-source] improve logging
+- [ ] [airflow] improve logging
