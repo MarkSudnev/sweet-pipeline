@@ -1,11 +1,13 @@
+import json
 import logging
 import os
 import sys
 import tempfile
 from pathlib import Path
-from typing import List
+from typing import List, Dict, Any
 
 from kafka import KafkaConsumer
+from prometheus_client import start_http_server, Counter
 
 from domain.data_consumer import DataConsumer
 from infrastructure.json_file_location_extractor import \
@@ -20,6 +22,8 @@ logging.basicConfig(
   format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
   stream=sys.stdout
 )
+
+counter = Counter("messages_consumed", "Messages Consumed")
 
 
 def main(
@@ -49,14 +53,17 @@ def main(
   )
 
   for message in kafka_consumer:
-    data = message.value.decode("utf-8")
-    logging.info(f"Message received: {data}")
+    data: str = message.value.decode("utf-8")
+    data_obj: Dict[str, Any] = json.loads(data)
+    logging.info(f"Message received: {data_obj['Key']}")
     result: Result[Result.Unit] = data_consumer(data)
+    counter.inc()
     if not result.is_successful():
       logging.error(f"Consumption failed: {result.error}")
 
 
 if __name__ == "__main__":
+  _, thread = start_http_server(port=8099)
   brokers = os.environ["KAFKA_BROKERS"].split(",")
   topic = os.environ["KAFKA_TOPIC"]
   aws_access_key_id = os.environ["AWS_ACCESS_KEY_ID"]
@@ -71,3 +78,4 @@ if __name__ == "__main__":
     aws_endpoint,
     pg_connection_string
   )
+  thread.join()

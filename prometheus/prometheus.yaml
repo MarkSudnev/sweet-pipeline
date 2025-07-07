@@ -6,3 +6,10 @@ scrape_configs:
       - targets: ['data-source:8091']
         labels:
           application: 'Data Source'
+  - job_name: 'Sweet Pipeline Data Consumer'
+    metrics_path: '/'
+    scrape_interval: 60s
+    static_configs:
+      - targets: ['data-consumer:8099']
+        labels:
+          application: 'Data Consumer'
