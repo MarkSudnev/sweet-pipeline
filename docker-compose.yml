@@ -211,6 +211,10 @@ services:
       GF_SECURITY_ADMIN_USER: admin 
     ports:
       - "3000:3000"
+    volumes:
+      - ./grafana/sweet-prometheus.yml:/etc/grafana/provisioning/datasources/sweet-prometheus.yaml:ro
+      - ./grafana/dashboard.yml:/etc/grafana/provisioning/dashboards/main.yaml
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
     depends_on:
       - prometheus
 
