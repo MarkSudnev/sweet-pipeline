@@ -20,6 +20,12 @@ A python application designed by Hexagon-like architecture. Listens **a topic in
 - Extracts data from file
 - Stores extracted data to storage (PostgreSQL)
 
+## How to run
+```bash
+docker compose up -d
+```
+then open Grafana dashboard http://localhost:3000 Log in with admin/admin and observe `data-source` and `data-consumer` graphs
+
 
 
 
