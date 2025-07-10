@@ -24,7 +24,7 @@ A python application designed by Hexagon-like architecture. Listens **a topic in
 ```bash
 docker compose up -d
 ```
-then open Grafana dashboard http://localhost:3000 Log in with admin/admin and observe `data-source` and `data-consumer` graphs
+then open Grafana dashboard http://localhost:3000 Log in with admin/admin and observe `data-source` and `data-consumer` graphs on dashboard
 
 
 
@@ -32,6 +32,3 @@ then open Grafana dashboard http://localhost:3000 Log in with admin/admin and ob
 ## TODO
 - [x] enchance monitoring
 - [ ] [data-consumer] fix missing topic failure
-- [ ] CI/CD with gh-actions
-- [ ] [data-source] improve logging
-- [ ] [airflow] improve logging
